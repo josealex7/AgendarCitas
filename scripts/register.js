@@ -8,7 +8,6 @@ const registrarUsuario = () => {
     let user = document.getElementById('NUser').value;
     let password = document.getElementById('NPassword').value;
     if (usuarios.length === 0) {
-        alert('hola')
         usuarios.push({
             user,
             password
