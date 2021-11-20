@@ -4,6 +4,7 @@ let citas = [];
 let buscar = document.getElementById('btnBuscar');
 let busqueda = document.getElementById('busquedaLista');
 let filtro = [];
+let arrayId = [];
 if (localStorage.getItem('Citas')) {
     citas = JSON.parse(localStorage.getItem('Citas'));
 }
@@ -70,13 +71,14 @@ const pintarDatos = () => {
 document.addEventListener('DOMContentLoaded', pintarDatos());
 
 buscar.addEventListener('click', e => {
-    let contador = 0;
+
     e.preventDefault();
     let input = document.getElementById('inputBuscar').value;
     let data = JSON.parse(localStorage.getItem('Citas'));
 
     filtro = data.filter(cita => cita.nombre.toLowerCase() === input.toLowerCase());
     console.log(filtro);
+    let contador = filtro.length - 1;
 
     filtro.length === 0 ?
         busqueda.innerHtml += `
@@ -93,28 +95,29 @@ buscar.addEventListener('click', e => {
             <td>${fecha}</td>
             <td>${hora}</td>
             <td>${sintomas}</td>
-            <button class="boton" id="${nombre} ${contador}">Borrar</button>
+            <button class="boton" id="${contador}">Borrar</button>
             </tr>
-            `
-            contador++;
+            `;
+            arrayId.push(contador);
+            contador--;
         });
+    botonBorrar();
+
 });
-let contador = 0;
-filtro.forEach((result) => {
-    let borrar = document.getElementById(result.nombre)
-    borrar.addEventListener('click', function() {
-        citas.splice(contador, 1);
-        localStorage.setItem('Citas', JSON.stringify(citas));
+
+const botonBorrar = () => {
+    arrayId.forEach((result) => {
+        let borrar = document.getElementById(result)
+        borrar.addEventListener('click', function() {
+            citas.splice(result, 1);
+            localStorage.setItem('Citas', JSON.stringify(citas));
+            Swal.fire({
+                title: "¡Cita eliminada!",
+                text: "¡Se ha eliminado la cita de la agenda de manera exitosa!",
+                icon: "success",
+            }).then(() => {
+                location.reload()
+            })
+        })
     })
-    contador++;
-})
-
-// arrayId.forEach(indice => {
-//     let boton = document.getElementById(indice);
-//     boton.addEventListener('click', function() {
-//         arrayCarrito.splice(indice, 1);
-//         localStorage.setItem('Carrito', JSON.stringify(arrayCarrito));
-//         actualizar();
-//     });
-
-// })
+};
